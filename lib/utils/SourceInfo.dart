@@ -78,7 +78,7 @@ class SourceInfo {
       if (WidgetsBinding.instance == null) {
         type = "";
       } else {
-        final data = MediaQueryData.fromWindow(WidgetsBinding.instance!.window);
+        final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
         type = data.size.shortestSide < 600 ? 'phone' : 'tablet';
       }
     } else if (Platform.isIOS) {
