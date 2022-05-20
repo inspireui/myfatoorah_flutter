@@ -15,7 +15,7 @@ dependencies:
 
   http: ^0.13.1
 
-  back_button_interceptor: ^5.0.2
+  back_button_interceptor: ^6.0.0
 
   device_info: ^2.0.0
 
