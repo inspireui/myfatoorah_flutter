@@ -8,11 +8,11 @@ class Country {
 
   Country(
       {this.portal,
-        this.v1,
-        this.v2,
-        this.testPortal,
-        this.testv1,
-        this.testv2});
+      this.v1,
+      this.v2,
+      this.testPortal,
+      this.testv1,
+      this.testv2});
 
   Country.fromJson(Map<String, dynamic> json) {
     portal = json['portal'];

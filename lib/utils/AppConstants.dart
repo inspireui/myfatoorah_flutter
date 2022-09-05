@@ -1,11 +1,10 @@
 abstract class AppConstants {
-
   static String versionPrefix = "/v";
   static String mAPIVersion = "2";
 
-  static String loadConfig = "https://portal.myfatoorah.com/Files/API/mf-config.json";
-  static String sendPayment =
-     versionPrefix + mAPIVersion + "/SendPayment";
+  static String loadConfig =
+      "https://portal.myfatoorah.com/Files/API/mf-config.json";
+  static String sendPayment = versionPrefix + mAPIVersion + "/SendPayment";
   static String initiatePayment =
       versionPrefix + mAPIVersion + "/InitiatePayment";
   static String executePayment =
@@ -14,10 +13,8 @@ abstract class AppConstants {
       versionPrefix + mAPIVersion + "/GetPaymentStatus";
   static String cancelRecurringPayment =
       versionPrefix + mAPIVersion + "/CancelRecurringPayment";
-  static String cancelToken =
-      versionPrefix + mAPIVersion + "/CancelToken";
-  static String initSession =
-     versionPrefix + mAPIVersion + "/InitiateSession";
+  static String cancelToken = versionPrefix + mAPIVersion + "/CancelToken";
+  static String initSession = versionPrefix + mAPIVersion + "/InitiateSession";
 
   static String? callBackUrl = "https://myfatoorah.com/";
   static String? errorUrl = "https://myfatooraherror.com/";

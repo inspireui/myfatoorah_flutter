@@ -84,10 +84,12 @@ class ErrorHelper {
         return new MFError(400, ""); // Error will be get from backend response;
 
       case ErrorsEnum.EXECUTE_PAYMENT_WITHOUT_PAYMENT_METHOD_ID_ERROR:
-        return new MFError(111, "You can\'t call executePayment without paymentMethodId");
+        return new MFError(
+            111, "You can\'t call executePayment without paymentMethodId");
 
       case ErrorsEnum.EMBEDDED_PAYMENT_WITH_PAYMENT_METHOD_ID_ERROR:
-        return new MFError(112, "You can\'t pass paymentMethodId while using embedded payment");
+        return new MFError(112,
+            "You can\'t pass paymentMethodId while using embedded payment");
 
       case ErrorsEnum.APPLE_PAY_CURRENCY_ERROR:
         return new MFError(113, "You should set 'displayCurrencyIso'");

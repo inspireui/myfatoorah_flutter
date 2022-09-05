@@ -35,7 +35,8 @@ class MFExecutePaymentRequest {
     this.invoiceValue = invoiceValue;
   }
 
-  MFExecutePaymentRequest.constructorForApplyPay(double invoiceValue, String displayCurrencyIso) {
+  MFExecutePaymentRequest.constructorForApplyPay(
+      double invoiceValue, String displayCurrencyIso) {
     this.invoiceValue = invoiceValue;
     this.displayCurrencyIso = displayCurrencyIso;
   }

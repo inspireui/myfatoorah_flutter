@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -30,8 +31,7 @@ class HtmlPage extends State<MFPaymentCardView> {
   void load(String htmlCode, int cardH) {
     html = htmlCode;
     cardHeight = cardH;
-    _webViewController!.loadUrl(
-        new Uri.dataFromString(html, mimeType: 'text/html').toString());
+    _webViewController!.loadUrl(convertHTMLToURL(html));
   }
 
   void submit(MFExecutePaymentRequest req, String lang, Function func) {
@@ -77,8 +77,7 @@ class HtmlPage extends State<MFPaymentCardView> {
                     returnPaymentFailed(message.message);
                   })
             ]),
-            initialUrl:
-                new Uri.dataFromString(html, mimeType: 'text/html').toString()),
+            initialUrl: convertHTMLToURL(html)),
       ),
     );
   }
@@ -95,5 +94,11 @@ class HtmlPage extends State<MFPaymentCardView> {
         MFResult.fail<MFPaymentStatusResponse>(new MFError(
             ErrorHelper.getValue(ErrorsEnum.EMBEDDED_PAYMENT_ERROR).code,
             error)));
+  }
+
+  String convertHTMLToURL(String html) {
+    return new Uri.dataFromString(html,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString();
   }
 }

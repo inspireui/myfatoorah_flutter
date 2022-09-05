@@ -21,6 +21,7 @@ class MFPaymentCardView extends StatefulWidget {
   final String expiryDateHint;
   final String cvvHint;
   final bool showLabels;
+  final String language;
   final String cardHolderNameLabel;
   final String cardNumberLabel;
   final String expiryDateLabel;
@@ -30,26 +31,27 @@ class MFPaymentCardView extends StatefulWidget {
   String environment = "demo.myfatoorah.com";
   HtmlPage? htmlPage;
 
-  MFPaymentCardView({
-    Key? key,
-    this.inputColor = Colors.black,
-    this.labelColor = Colors.black,
-    this.errorColor = Colors.red,
-    this.borderColor = Colors.grey,
-    cardHeight = 0,
-    this.fontSize = 14,
-    this.borderWidth = 1,
-    this.borderRadius = 8,
-    this.cardHolderNameHint = "Name On Card",
-    this.cardNumberHint = "Number",
-    this.expiryDateHint = "MM / YY",
-    this.cvvHint = "CVV",
-    this.cardHolderNameLabel = "Card Holder Name",
-    this.cardNumberLabel = "Card Number",
-    this.expiryDateLabel = "ExpiryDate",
-    this.cvvLabel = "Security Code",
-    this.showLabels = true,
-  }) : super(key: key) {
+  MFPaymentCardView(
+      {Key? key,
+      this.inputColor = Colors.black,
+      this.labelColor = Colors.black,
+      this.errorColor = Colors.red,
+      this.borderColor = Colors.grey,
+      cardHeight = 0,
+      this.fontSize = 14,
+      this.borderWidth = 1,
+      this.borderRadius = 8,
+      this.cardHolderNameHint = "Name On Card",
+      this.cardNumberHint = "Number",
+      this.expiryDateHint = "MM / YY",
+      this.cvvHint = "CVV",
+      this.cardHolderNameLabel = "Card Holder Name",
+      this.cardNumberLabel = "Card Number",
+      this.expiryDateLabel = "ExpiryDate",
+      this.cvvLabel = "Security Code",
+      this.showLabels = true,
+      this.language = "en"})
+      : super(key: key) {
     calculateHeights(cardHeight);
 
     var html = generateHTML("", "", newCardHeight);
@@ -90,9 +92,12 @@ class MFPaymentCardView extends StatefulWidget {
   }
 
   String generateHTML(String sessionId, String countryCode, int newCardHeight) {
+    var direction = "ltr";
+    if (language == MFAPILanguage.AR) direction = "rtl";
+
     return """
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="$language">
       
       <head>
           <meta charset="UTF-8">
@@ -114,62 +119,64 @@ class MFPaymentCardView extends StatefulWidget {
             Fail.postMessage(error);
           }
       </script>
-          <script>
-              var config = {
-                  countryCode: "$countryCode",
-                  sessionId: "$sessionId",
-                  cardViewId: "card-element",
-                  style: {
-                      cardHeight: 500,
-                      input: {
-                          color: "#${convertToHex(inputColor)}",
-                          fontSize: "${fontSize}px",
-                          fontFamily: "sans-serif",
-                          inputHeight: "${fieldHeight}px",
-                          inputMargin: "10px",
-                          borderColor: "#${convertToHex(borderColor)}",
-                          borderWidth: "${borderWidth}px",
-                          borderRadius: "${borderRadius}px",
-                          boxShadow: "0px",
-                          placeHolder: {
-                              holderName: "$cardHolderNameHint",
-                              cardNumber: "$cardNumberHint",
-                              expiryDate: "$expiryDateHint",
-                              securityCode: "$cvvHint",
-                          }
-                      },
-                      label: {
-                          display: $showLabels,
-                          color: "#${convertToHex(labelColor)}",
-                          fontSize: "${fontSize}px",
-                          fontFamily: "sans-serif",
-                          text: {
-                              holderName: "$cardHolderNameLabel",
-                              cardNumber: "$cardNumberLabel",
-                              expiryDate: "$expiryDateLabel",
-                              securityCode: "$cvvLabel",
-                          },
-                      },
-                      error: {
-                          borderColor: "#${convertToHex(errorColor)}",
-                          borderRadius: "${borderRadius}px",
-                          boxShadow: "0px",
+      
+      <script>
+          var config = {
+              countryCode: "$countryCode",
+              sessionId: "$sessionId",
+              cardViewId: "card-element",
+              style: {
+                  direction: "$direction",
+                  cardHeight: 500,
+                  input: {
+                      color: "#${convertToHex(inputColor)}",
+                      fontSize: "${fontSize}px",
+                      fontFamily: "sans-serif",
+                      inputHeight: "${fieldHeight}px",
+                      inputMargin: "10px",
+                      borderColor: "#${convertToHex(borderColor)}",
+                      borderWidth: "${borderWidth}px",
+                      borderRadius: "${borderRadius}px",
+                      boxShadow: "0px",
+                      placeHolder: {
+                          holderName: "$cardHolderNameHint",
+                          cardNumber: "$cardNumberHint",
+                          expiryDate: "$expiryDateHint",
+                          securityCode: "$cvvHint",
+                      }
+                  },
+                  label: {
+                      display: $showLabels,
+                      color: "#${convertToHex(labelColor)}",
+                      fontSize: "${fontSize}px",
+                      fontFamily: "sans-serif",
+                      text: {
+                          holderName: "$cardHolderNameLabel",
+                          cardNumber: "$cardNumberLabel",
+                          expiryDate: "$expiryDateLabel",
+                          securityCode: "$cvvLabel",
                       },
                   },
-              };
-              this.myFatoorah.init(config);
-       
-              function submit() {
+                  error: {
+                      borderColor: "#${convertToHex(errorColor)}",
+                      borderRadius: "${borderRadius}px",
+                      boxShadow: "0px",
+                  },
+              },
+          };
+          this.myFatoorah.init(config);
+   
+          function submit() {
 
-                  this.myFatoorah.submit() // this.myFatoorah.submit(currency)
-                      .then(function(response) {
-                          callExecutePayment(response.SessionId);
-                      })
-                      .catch(function(error) {
-                          returnPaymentFailed(error);
-                      });        
-              };
-          </script>
+              this.myFatoorah.submit() // this.myFatoorah.submit(currency)
+                  .then(function(response) {
+                      callExecutePayment(response.SessionId);
+                  })
+                  .catch(function(error) {
+                      returnPaymentFailed(error);
+                  });        
+          };
+      </script>
       
       </body>
       
