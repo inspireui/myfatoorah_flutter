@@ -32,7 +32,7 @@ class SourceInfo {
   }
 
   String getPluginVersion() {
-    return "2.1.13";
+    return "2.1.14";
   }
 
   String getAPIVersion() {
