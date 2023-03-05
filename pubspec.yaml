@@ -1,5 +1,5 @@
 name: myfatoorah_flutter
-version: 2.1.13  # Don't forget to update this number inside the "getPluginVersion" method in "SourceInfo.dart" file and in README file and CHANGELOG file
+version: 2.1.14  # Don't forget to update this number inside the "getPluginVersion" method in "SourceInfo.dart" file and in README file and CHANGELOG file
 description: This plugin simplify the MyFatoorah payment platforms integration with your app, that works smoothly
   and provide you a simple way to embed our payment functions within your app.
 documentation: https://myfatoorah.readme.io/docs/flutter
