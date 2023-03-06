@@ -485,42 +485,42 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.all(5.0),
                   ),
                   if (Platform.isIOS) createApplePayView(),
-                  RaisedButton(
-                    child: Text('Pay (Embedded Payment)'),
-                    onPressed: payWithEmbeddedPayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Send Payment'),
-                    onPressed: sendPayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Initiate Payment'),
-                    onPressed: initiatePayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Execute Regular Payment'),
-                    onPressed: executeRegularPayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Execute Direct Payment'),
-                    onPressed: executeDirectPayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Execute Direct Payment with Recurring'),
-                    onPressed: executeDirectPaymentWithRecurring,
-                  ),
-                  RaisedButton(
-                    child: Text('Cancel Recurring Payment'),
-                    onPressed: cancelRecurringPayment,
-                  ),
-                  RaisedButton(
-                    child: Text('Cancel Token'),
-                    onPressed: cancelToken,
-                  ),
-                  RaisedButton(
-                    child: Text('Get Payment Status'),
-                    onPressed: getPaymentStatus,
-                  ),
+                  // RaisedButton(
+                  //   child: Text('Pay (Embedded Payment)'),
+                  //   onPressed: payWithEmbeddedPayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Send Payment'),
+                  //   onPressed: sendPayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Initiate Payment'),
+                  //   onPressed: initiatePayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Execute Regular Payment'),
+                  //   onPressed: executeRegularPayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Execute Direct Payment'),
+                  //   onPressed: executeDirectPayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Execute Direct Payment with Recurring'),
+                  //   onPressed: executeDirectPaymentWithRecurring,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Cancel Recurring Payment'),
+                  //   onPressed: cancelRecurringPayment,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Cancel Token'),
+                  //   onPressed: cancelToken,
+                  // ),
+                  // RaisedButton(
+                  //   child: Text('Get Payment Status'),
+                  //   onPressed: getPaymentStatus,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Text(_response),

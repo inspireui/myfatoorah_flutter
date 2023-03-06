@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:myfatoorah_flutter/model/MFError.dart';
 import 'package:myfatoorah_flutter/utils/ErrorsEnum.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/src/webview_flutter_legacy.dart';
 
 import '../myfatoorah_flutter.dart';
 import 'MFPaymentCardView.dart';

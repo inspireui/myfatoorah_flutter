@@ -10,7 +10,7 @@ import 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.da
 import 'package:myfatoorah_flutter/utils/MFCountry.dart';
 import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
 
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter/src/webview_flutter_legacy.dart';
 
 import 'package:myfatoorah_flutter/model/MFError.dart';
 import 'package:myfatoorah_flutter/model/cancelrecurring/SDKCancelRecurringResponse.dart';
