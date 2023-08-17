@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  http: ^0.13.1
+  http: ^1.1.0
 
   back_button_interceptor: ^6.0.0
 
