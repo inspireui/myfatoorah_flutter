@@ -1,68 +1,63 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:flutter/services.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:myfatoorah_flutter/ConfigManager.dart';
-import 'package:myfatoorah_flutter/model/config/UserConfig.dart';
-import 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.dart';
-import 'package:myfatoorah_flutter/utils/MFCountry.dart';
-import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
-
-import 'package:webview_flutter/webview_flutter.dart';
-
 import 'package:myfatoorah_flutter/model/MFError.dart';
+import 'package:myfatoorah_flutter/model/MyBaseResponse.dart';
 import 'package:myfatoorah_flutter/model/cancelrecurring/SDKCancelRecurringResponse.dart';
 import 'package:myfatoorah_flutter/model/canceltoken/SDKCancelTokenResponse.dart';
+import 'package:myfatoorah_flutter/model/config/UserConfig.dart';
 import 'package:myfatoorah_flutter/model/directpayment/MFCardInfo.dart';
 import 'package:myfatoorah_flutter/model/directpayment/MFDirectPaymentResponse.dart';
 import 'package:myfatoorah_flutter/model/directpayment/SDKDirectPaymentResponse.dart';
 import 'package:myfatoorah_flutter/model/executepayment/MFExecutePaymentRequest.dart';
 import 'package:myfatoorah_flutter/model/executepayment/SDKExecutePaymentResponse.dart';
-import 'package:myfatoorah_flutter/model/MyBaseResponse.dart';
 import 'package:myfatoorah_flutter/model/initpayment/MFInitiatePaymentRequest.dart';
 import 'package:myfatoorah_flutter/model/initpayment/SDKInitiatePaymentResponse.dart';
+import 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.dart';
 import 'package:myfatoorah_flutter/model/paymentstatus/MFPaymentStatusRequest.dart';
 import 'package:myfatoorah_flutter/model/paymentstatus/SDKPaymentStatusResponse.dart';
 import 'package:myfatoorah_flutter/model/sendpayment/MFSendPaymentRequest.dart';
 import 'package:myfatoorah_flutter/model/sendpayment/SDKSendPaymentResponse.dart';
-import 'model/config/Country.dart';
-import 'model/initsession/SDKInitSessionResponse.dart';
 import 'package:myfatoorah_flutter/utils/APIUtils.dart';
+import 'package:myfatoorah_flutter/utils/AppConstants.dart';
 import 'package:myfatoorah_flutter/utils/ErrorsEnum.dart';
+import 'package:myfatoorah_flutter/utils/MFCountry.dart';
+import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
 import 'package:myfatoorah_flutter/utils/MFRecurringType.dart';
 import 'package:myfatoorah_flutter/utils/MFResult.dart';
-import 'package:myfatoorah_flutter/utils/AppConstants.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:myfatoorah_flutter/utils/SourceInfo.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
+import 'model/config/Country.dart';
+import 'model/initsession/SDKInitSessionResponse.dart';
 import 'utils/ErrorUtils.dart';
 
+export 'package:myfatoorah_flutter/embeddedpayment/MFPaymentCardView.dart';
 // Export all MyFatoorah SDK classes to can be visible to sdk end users
 export 'package:myfatoorah_flutter/model/directpayment/MFCardInfo.dart';
 export 'package:myfatoorah_flutter/model/directpayment/MFDirectPaymentResponse.dart';
 export 'package:myfatoorah_flutter/model/executepayment/MFExecutePaymentRequest.dart';
 export 'package:myfatoorah_flutter/model/initpayment/MFInitiatePaymentRequest.dart';
-export 'package:myfatoorah_flutter/model/paymentstatus/MFPaymentStatusRequest.dart';
-export 'package:myfatoorah_flutter/model/sendpayment/MFSendPaymentRequest.dart';
-export 'package:myfatoorah_flutter/model/paymentstatus/SDKPaymentStatusResponse.dart';
-export 'package:myfatoorah_flutter/model/sendpayment/SDKSendPaymentResponse.dart';
 export 'package:myfatoorah_flutter/model/initpayment/SDKInitiatePaymentResponse.dart';
-export 'package:myfatoorah_flutter/utils/MFResult.dart';
+export 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.dart';
+export 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
+export 'package:myfatoorah_flutter/model/paymentstatus/MFPaymentStatusRequest.dart';
+export 'package:myfatoorah_flutter/model/paymentstatus/SDKPaymentStatusResponse.dart';
+export 'package:myfatoorah_flutter/model/sendpayment/MFSendPaymentRequest.dart';
+export 'package:myfatoorah_flutter/model/sendpayment/SDKSendPaymentResponse.dart';
 export 'package:myfatoorah_flutter/utils/MFAPILanguage.dart';
-export 'package:myfatoorah_flutter/utils/MFInvoiceLanguage.dart';
 export 'package:myfatoorah_flutter/utils/MFCurrencyISO.dart';
+export 'package:myfatoorah_flutter/utils/MFInvoiceLanguage.dart';
 export 'package:myfatoorah_flutter/utils/MFMobileISO.dart';
 export 'package:myfatoorah_flutter/utils/MFNotificationOption.dart';
 export 'package:myfatoorah_flutter/utils/MFRecurringType.dart';
-export 'package:myfatoorah_flutter/embeddedpayment/MFPaymentCardView.dart';
-export 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.dart';
-export 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
+export 'package:myfatoorah_flutter/utils/MFResult.dart';
 
 // ignore: non_constant_identifier_names
 var MFSDK = new MyFatoorahFlutter();
@@ -732,7 +727,7 @@ class _MyAppState extends State<MyApp> {
   _SDKListener? sdkListener;
   _AppBarSpecs? appBarSpecs;
   double progress = 0.0;
-  WebViewController? _webViewController;
+  late WebViewController _webViewController;
   bool _webViewVisibility = true;
 
   _MyAppState(
@@ -754,7 +749,27 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            _setProgressBar(progress.toString());
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            // print("navigationDelegate url: " + request.url);
+            checkCallBacks(request.url, recurringId);
+            return NavigationDecision.navigate;
+          },
+          onPageFinished: (String url) {
+            // print('Page finished loading: $url');
+          },
+          onWebResourceError: (WebResourceError error) {},
+        ),
+      )
+      ..loadRequest(Uri.parse(paymentURL!));
 
     BackButtonInterceptor.add(myCancelButtonInterceptor);
   }
@@ -794,7 +809,7 @@ class _MyAppState extends State<MyApp> {
                       icon: const Icon(Icons.autorenew),
                       onPressed: () {
                         _setProgressBar("0");
-                        _webViewController!.reload();
+                        _webViewController.reload();
                       },
                     ),
                     IconButton(
@@ -819,33 +834,13 @@ class _MyAppState extends State<MyApp> {
 //                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
             child: Visibility(
               visible: _webViewVisibility,
-              child: getWebView(paymentURL!, recurringId),
+              child: WebViewWidget(
+                controller: _webViewController,
+              ),
             ),
           )),
         ])),
       ),
-    );
-  }
-
-  getWebView(String paymentURL, String? recurringId) {
-    return WebView(
-      initialUrl: paymentURL,
-      javascriptMode: JavascriptMode.unrestricted,
-      onWebViewCreated: (WebViewController webViewController) {
-        _webViewController = webViewController;
-      },
-      onProgress: (int progress) {
-        _setProgressBar(progress.toString());
-      },
-      navigationDelegate: (NavigationRequest request) {
-        // print("navigationDelegate url: " + request.url);
-        checkCallBacks(request.url, recurringId);
-        return NavigationDecision.navigate;
-      },
-      onPageFinished: (String url) {
-        // print('Page finished loading: $url');
-      },
-      gestureNavigationEnabled: true,
     );
   }
 

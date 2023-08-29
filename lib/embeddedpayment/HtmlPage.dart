@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:myfatoorah_flutter/model/MFError.dart';
@@ -15,7 +14,7 @@ class HtmlPage extends State<MFPaymentCardView> {
   static late String apiLang;
   static late Function submitCallBack;
   Function? onCardBinChanged;
-  static WebViewController? _webViewController;
+  WebViewController _webViewController = WebViewController();
 
   HtmlPage(String htmlCode) {
     html = htmlCode;
@@ -25,14 +24,30 @@ class HtmlPage extends State<MFPaymentCardView> {
   void initState() {
     super.initState();
     // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    _webViewController = _webViewController
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel('Success',
+          onMessageReceived: (JavaScriptMessage message) {
+        executePayment(context, message.message);
+      })
+      ..addJavaScriptChannel('Fail',
+          onMessageReceived: (JavaScriptMessage message) {
+        returnPaymentFailed(message.message);
+      })
+      ..addJavaScriptChannel('BinChanges',
+          onMessageReceived: (JavaScriptMessage message) {
+        onCardBinChangedCallback(message.message);
+      })
+      ..setBackgroundColor(const Color(0x00000000))
+      ..loadHtmlString(convertHTMLToURL(html));
   }
 
   void load(String htmlCode, int cardH, Function? onCardBinChanged) {
     html = htmlCode;
     cardHeight = cardH;
     this.onCardBinChanged = onCardBinChanged;
-    _webViewController!.loadUrl(convertHTMLToURL(html));
+    _webViewController.loadRequest(convertHTMLToURI(html));
   }
 
   void submit(MFExecutePaymentRequest req, String lang, Function callback) {
@@ -51,7 +66,7 @@ class HtmlPage extends State<MFPaymentCardView> {
     request = req;
     apiLang = lang;
     submitCallBack = callback;
-    _webViewController?.runJavascript('submit()');
+    _webViewController.runJavaScript('submit()');
   }
 
   @override
@@ -61,29 +76,9 @@ class HtmlPage extends State<MFPaymentCardView> {
       child: GestureDetector(
         onHorizontalDragUpdate: (updateDetails) {},
         onVerticalDragUpdate: (updateDetails) {},
-        child: WebView(
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
-              _webViewController = webViewController;
-            },
-            javascriptChannels: Set.from([
-              JavascriptChannel(
-                  name: 'Success',
-                  onMessageReceived: (JavascriptMessage message) {
-                    executePayment(context, message.message);
-                  }),
-              JavascriptChannel(
-                  name: 'Fail',
-                  onMessageReceived: (JavascriptMessage message) {
-                    returnPaymentFailed(message.message);
-                  }),
-              JavascriptChannel(
-                  name: 'BinChanges',
-                  onMessageReceived: (JavascriptMessage message) {
-                    onCardBinChangedCallback(message.message);
-                  })
-            ]),
-            initialUrl: convertHTMLToURL(html)),
+        child: WebViewWidget(
+          controller: _webViewController,
+        ),
       ),
     );
   }
@@ -92,6 +87,11 @@ class HtmlPage extends State<MFPaymentCardView> {
     return new Uri.dataFromString(html,
             mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
         .toString();
+  }
+
+  Uri convertHTMLToURI(String html) {
+    return new Uri.dataFromString(html,
+        mimeType: 'text/html', encoding: Encoding.getByName('utf-8'));
   }
 
   void executePayment(BuildContext context, String sessionId) {

@@ -44,7 +44,7 @@ SPEC CHECKSUMS:
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   myfatoorah_flutter: 7db54f4e59b70038704a174c3511718e0d1746b1
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
-  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
+  webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
 PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
