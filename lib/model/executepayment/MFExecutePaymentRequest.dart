@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
+import 'package:myfatoorah_flutter/utils/AppConstants.dart';
 import 'package:myfatoorah_flutter/utils/MFRecurringType.dart';
 
 class MFExecutePaymentRequest {
@@ -9,8 +12,6 @@ class MFExecutePaymentRequest {
   String? customerMobile;
   String? customerEmail;
   double? invoiceValue;
-  String? callBackUrl;
-  String? errorUrl;
   String? language;
   String? customerReference;
   String? customerCivilId;
@@ -50,9 +51,6 @@ class MFExecutePaymentRequest {
     customerMobile = json['CustomerMobile'];
     customerEmail = json['CustomerEmail'];
     invoiceValue = json['InvoiceValue'];
-    callBackUrl = json['CallBackUrl'];
-
-    errorUrl = json['ErrorUrl'];
     language = json['Language'];
     customerReference = json['CustomerReference'];
     customerCivilId = json['CustomerCivilId'];
@@ -96,8 +94,8 @@ class MFExecutePaymentRequest {
     if (this.customerEmail != null) data['CustomerEmail'] = this.customerEmail;
     if (this.invoiceValue != null)
       data['InvoiceValue'] = this.invoiceValue.toString();
-    if (this.callBackUrl != null) data['CallBackUrl'] = this.callBackUrl;
-    if (this.errorUrl != null) data['ErrorUrl'] = this.errorUrl;
+    data['CallBackUrl'] = AppConstants.callBackUrl;
+    data['ErrorUrl'] = AppConstants.errorUrl;
     if (this.language != null) data['Language'] = this.language;
     if (this.customerReference != null)
       data['CustomerReference'] = this.customerReference;

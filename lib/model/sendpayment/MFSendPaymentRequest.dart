@@ -1,3 +1,6 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
+import 'package:myfatoorah_flutter/utils/AppConstants.dart';
 import 'package:myfatoorah_flutter/model/executepayment/MFExecutePaymentRequest.dart';
 
 class MFSendPaymentRequest {
@@ -8,8 +11,6 @@ class MFSendPaymentRequest {
   String? customerEmail;
   double? invoiceValue;
   String? displayCurrencyIso;
-  String? callBackUrl;
-  String? errorUrl;
   String? language;
   String? customerReference;
   String? customerCivilId;
@@ -32,8 +33,6 @@ class MFSendPaymentRequest {
       this.customerEmail,
       this.invoiceValue,
       this.displayCurrencyIso,
-      this.callBackUrl,
-      this.errorUrl,
       this.language,
       this.customerReference,
       this.customerCivilId,
@@ -54,8 +53,6 @@ class MFSendPaymentRequest {
     customerEmail = json['CustomerEmail'];
     invoiceValue = json['InvoiceValue'];
     displayCurrencyIso = json['DisplayCurrencyIso'];
-    callBackUrl = json['CallBackUrl'];
-    errorUrl = json['ErrorUrl'];
     language = json['Language'];
     customerReference = json['CustomerReference'];
     customerCivilId = json['CustomerCivilId'];
@@ -96,8 +93,8 @@ class MFSendPaymentRequest {
       data['InvoiceValue'] = this.invoiceValue.toString();
     if (this.displayCurrencyIso != null)
       data['DisplayCurrencyIso'] = this.displayCurrencyIso;
-    if (this.callBackUrl != null) data['CallBackUrl'] = this.callBackUrl;
-    if (this.errorUrl != null) data['ErrorUrl'] = this.errorUrl;
+    data['CallBackUrl'] = AppConstants.callBackUrl;
+    data['ErrorUrl'] = AppConstants.errorUrl;
     if (this.language != null) data['Language'] = this.language;
     if (this.customerReference != null)
       data['CustomerReference'] = this.customerReference;

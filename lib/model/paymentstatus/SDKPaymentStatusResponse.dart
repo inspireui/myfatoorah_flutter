@@ -149,6 +149,7 @@ class InvoiceTransactions {
   String? currency;
   String? error;
   String? cardNumber;
+  String? errorCode;
 
   InvoiceTransactions(
       {this.transactionDate,
@@ -166,7 +167,8 @@ class InvoiceTransactions {
       this.paidCurrencyValue,
       this.currency,
       this.error,
-      this.cardNumber});
+      this.cardNumber,
+      this.errorCode});
 
   InvoiceTransactions.fromJson(Map<String, dynamic> json) {
     transactionDate = json['TransactionDate'];
@@ -185,6 +187,7 @@ class InvoiceTransactions {
     currency = json['Currency'];
     error = json['Error'];
     cardNumber = json['CardNumber'];
+    errorCode = json['ErrorCode'];
   }
 
   Map<String, dynamic> toJson() {
@@ -205,6 +208,7 @@ class InvoiceTransactions {
     data['Currency'] = this.currency;
     data['Error'] = this.error;
     data['CardNumber'] = this.cardNumber;
+    data['ErrorCode'] = this.errorCode;
     return data;
   }
 }

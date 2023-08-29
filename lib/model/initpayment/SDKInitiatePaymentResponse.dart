@@ -54,17 +54,20 @@ class PaymentMethods {
   double? totalAmount;
   String? currencyIso;
   String? imageUrl;
+  bool? isEmbeddedSupported;
+  String? paymentCurrencyIso;
 
-  PaymentMethods(
-      {this.paymentMethodId,
-      this.paymentMethodAr,
-      this.paymentMethodEn,
-      this.paymentMethodCode,
-      this.isDirectPayment,
-      this.serviceCharge,
-      this.totalAmount,
-      this.currencyIso,
-      this.imageUrl});
+  PaymentMethods({this.paymentMethodId,
+    this.paymentMethodAr,
+    this.paymentMethodEn,
+    this.paymentMethodCode,
+    this.isDirectPayment,
+    this.serviceCharge,
+    this.totalAmount,
+    this.currencyIso,
+    this.imageUrl,
+    this.isEmbeddedSupported,
+    this.paymentCurrencyIso});
 
   PaymentMethods.fromJson(Map<String, dynamic> json) {
     paymentMethodId = json['PaymentMethodId'];
@@ -76,6 +79,8 @@ class PaymentMethods {
     totalAmount = json['TotalAmount'];
     currencyIso = json['CurrencyIso'];
     imageUrl = json['ImageUrl'];
+    isEmbeddedSupported = json['IsEmbeddedSupported'];
+    paymentCurrencyIso = json['PaymentCurrencyIso'];
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +94,8 @@ class PaymentMethods {
     data['TotalAmount'] = this.totalAmount;
     data['CurrencyIso'] = this.currencyIso;
     data['ImageUrl'] = this.imageUrl;
+    data['IsEmbeddedSupported'] = this.isEmbeddedSupported;
+    data['PaymentCurrencyIso'] = this.paymentCurrencyIso;
     return data;
   }
 }

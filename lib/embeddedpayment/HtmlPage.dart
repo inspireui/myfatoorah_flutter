@@ -4,17 +4,17 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:myfatoorah_flutter/model/MFError.dart';
 import 'package:myfatoorah_flutter/utils/ErrorsEnum.dart';
-import 'package:webview_flutter/src/webview_flutter_legacy.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../myfatoorah_flutter.dart';
-import 'MFPaymentCardView.dart';
 
 class HtmlPage extends State<MFPaymentCardView> {
   static int cardHeight = 230;
   static String html = "";
   static late MFExecutePaymentRequest request;
   static late String apiLang;
-  static late Function callback;
+  static late Function submitCallBack;
+  Function? onCardBinChanged;
   static WebViewController? _webViewController;
 
   HtmlPage(String htmlCode) {
@@ -28,15 +28,16 @@ class HtmlPage extends State<MFPaymentCardView> {
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
-  void load(String htmlCode, int cardH) {
+  void load(String htmlCode, int cardH, Function? onCardBinChanged) {
     html = htmlCode;
     cardHeight = cardH;
+    this.onCardBinChanged = onCardBinChanged;
     _webViewController!.loadUrl(convertHTMLToURL(html));
   }
 
-  void submit(MFExecutePaymentRequest req, String lang, Function func) {
+  void submit(MFExecutePaymentRequest req, String lang, Function callback) {
     if (req.paymentMethodId != null) {
-      func(
+      callback(
           "",
           MFResult.fail<MFPaymentStatusResponse>(new MFError(
               ErrorHelper.getValue(
@@ -49,8 +50,8 @@ class HtmlPage extends State<MFPaymentCardView> {
     }
     request = req;
     apiLang = lang;
-    callback = func;
-    _webViewController!.evaluateJavascript('submit()');
+    submitCallBack = callback;
+    _webViewController?.runJavascript('submit()');
   }
 
   @override
@@ -75,6 +76,11 @@ class HtmlPage extends State<MFPaymentCardView> {
                   name: 'Fail',
                   onMessageReceived: (JavascriptMessage message) {
                     returnPaymentFailed(message.message);
+                  }),
+              JavascriptChannel(
+                  name: 'BinChanges',
+                  onMessageReceived: (JavascriptMessage message) {
+                    onCardBinChangedCallback(message.message);
                   })
             ]),
             initialUrl: convertHTMLToURL(html)),
@@ -82,23 +88,28 @@ class HtmlPage extends State<MFPaymentCardView> {
     );
   }
 
+  String convertHTMLToURL(String html) {
+    return new Uri.dataFromString(html,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString();
+  }
+
   void executePayment(BuildContext context, String sessionId) {
     request.sessionId = sessionId;
 
-    MFSDK.callExecutePayment(context, request, apiLang, onResponse: callback);
+    MFSDK.callExecutePayment(context, request, apiLang,
+        onResponse: submitCallBack, isEmbeddedPayment: true);
   }
 
   void returnPaymentFailed(String error) {
-    callback(
+    submitCallBack(
         "",
         MFResult.fail<MFPaymentStatusResponse>(new MFError(
             ErrorHelper.getValue(ErrorsEnum.EMBEDDED_PAYMENT_ERROR).code,
             error)));
   }
 
-  String convertHTMLToURL(String html) {
-    return new Uri.dataFromString(html,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString();
+  void onCardBinChangedCallback(String bin) {
+    if (onCardBinChanged != null) onCardBinChanged!(bin);
   }
 }

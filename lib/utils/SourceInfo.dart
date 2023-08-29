@@ -32,7 +32,7 @@ class SourceInfo {
   }
 
   String getPluginVersion() {
-    return "2.1.14";
+    return "2.1.20";
   }
 
   String getAPIVersion() {
@@ -75,12 +75,8 @@ class SourceInfo {
     String type = "";
 
     if (Platform.isAndroid) {
-      if (WidgetsBinding.instance == null) {
-        type = "";
-      } else {
-        final data = MediaQueryData.fromWindow(WidgetsBinding.instance!.window);
-        type = data.size.shortestSide < 600 ? 'phone' : 'tablet';
-      }
+      type =
+          MediaQuery.of(context!).size.shortestSide < 600 ? 'phone' : 'tablet';
     } else if (Platform.isIOS) {
       try {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

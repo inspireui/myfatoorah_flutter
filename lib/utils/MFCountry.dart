@@ -1,6 +1,3 @@
-import 'package:myfatoorah_flutter/myfatoorah_flutter.dart';
-import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
-
 enum MFCountry {
   KUWAIT,
   SAUDI_ARABIA,

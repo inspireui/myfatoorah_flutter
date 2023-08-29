@@ -1,5 +1,32 @@
-## 2.1.13 - 11/5/2022
+## 2.1.20 - 18/5/2023
+* fix redirection after `ExecutePayment`.
 * Fix some bugs and make overall enhancement.
+
+## 2.1.19 - 18/5/2023
+* Remove `callBackUrl` and `errorUrl` from `ExecutePaymentRequest`.
+* Fix some bugs and make overall enhancement.
+
+## 2.1.18 - 24/1/2023
+* Add `loadWithStartLoading` in Apple PayButton to handle loading stuff until payment done.
+* Fix some bugs and make overall enhancement.
+
+## 2.1.17 - 3/1/2023
+* Improve apple pay
+* Fix some bugs and make overall enhancement.
+
+## 2.1.16 - 27/11/2022
+* Fix some bugs and make overall enhancement.
+
+## 2.1.15 - 21/11/2022
+* Add `onCardBinChanged` callback to the `load()` method of `MFPaymentCardView`.
+* Fix some bugs and make overall enhancement.
+
+## 2.1.14 - 7/11/2022
+* Fix some bugs and make overall enhancement.
+ 
+* ## 2.1.13 - 28/8/2022
+* Fix some bugs and make overall enhancement.
+
 ## 2.1.12 - 11/5/2022
 * Fix some bugs and make overall enhancement.
 

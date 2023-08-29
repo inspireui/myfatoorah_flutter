@@ -1,7 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:myfatoorah_flutter/embeddedapplepay/MFApplePayButton.dart';
-import 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.dart';
-import 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
 import 'package:myfatoorah_flutter/myfatoorah_flutter.dart';
 import 'package:myfatoorah_flutter/utils/MFCountry.dart';
 import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
@@ -15,7 +15,8 @@ TODO: The following API token key for testing only, so that when you go live
 
 // You can get the API Token Key from here:
 // https://myfatoorah.readme.io/docs/test-token
-final String mAPIKey = "";
+final String mAPIKey =
+    "rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL";
 
 void main() {
   runApp(MyApp());
@@ -97,16 +98,17 @@ class _MyHomePageState extends State<MyHomePage> {
               if (result.isSuccess())
                 {
                   // This for embedded payment view
-                  mfPaymentCardView.load(result.response!)
+                  mfPaymentCardView.load(result.response!,
+                      onCardBinChanged: (String bin) => {print("Bin: " + bin)}),
 
                   /// This used for Apple Pay in iOS only.
-                  // loadApplePay(result.response!)
+
+                  if (Platform.isIOS) loadApplePay(result.response!)
                 }
               else
                 {
                   setState(() {
-                    print("Response: " +
-                        result.error!.toJson().toString().toString());
+                    // print("Response: " + result.error!.toJson().toString());
                     _response = result.error!.message!;
                   })
                 }
@@ -142,10 +144,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void loadApplePay(MFInitiateSessionResponse mfInitiateSessionResponse) {
     var request = MFExecutePaymentRequest.constructorForApplyPay(
         0.100, MFCurrencyISO.KUWAIT_KWD);
-    mfApplePayButton.load(
-        mfInitiateSessionResponse,
-        request,
-        MFAPILanguage.EN,
+    mfApplePayButton.loadWithStartLoading(
+        mfInitiateSessionResponse, request, MFAPILanguage.EN, () {
+      setState(() {
+        _response = "Loading...";
+      });
+    },
         (String invoiceId, MFResult<MFPaymentStatusResponse> result) => {
               if (result.isSuccess())
                 {
@@ -183,16 +187,14 @@ class _MyHomePageState extends State<MyHomePage> {
               if (result.isSuccess())
                 {
                   setState(() {
-                    print("Response: " +
-                        result.response!.toJson().toString().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    print("Response: " + result.response!.toJson().toString());
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
                 {
                   setState(() {
-                    print("Response: " +
-                        result.error!.toJson().toString().toString());
+                    print("Response: " + result.error!.toJson().toString());
                     _response = result.error!.message!;
                   })
                 }
@@ -217,7 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 {
                   setState(() {
                     print("Response: " + result.response!.toJson().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
@@ -255,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     print("invoiceId: " + invoiceId);
                     print("Response: " + result.response!.toJson().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
@@ -306,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     print("invoiceId: " + invoiceId);
                     print("Response: " + result.response!.toJson().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
@@ -358,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     print("Response: " + invoiceId);
                     print("Response: " + result.response!.toJson().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
@@ -380,7 +382,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Payment Enquiry
    */
   void getPaymentStatus() {
-    var request = MFPaymentStatusRequest(invoiceId: "1209756"); // 1209773
+    var request = MFPaymentStatusRequest(
+        invoiceId: "1849178"); // 647116 for success 1849178 for fail
 
     MFSDK.getPaymentStatus(
         MFAPILanguage.EN,
@@ -390,7 +393,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 {
                   setState(() {
                     print("Response: " + result.response!.toJson().toString());
-                    _response = result.response!.toJson().toString().toString();
+                    _response = result.response!.toJson().toString();
                   })
                 }
               else
@@ -485,45 +488,49 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: EdgeInsets.all(5.0),
                   ),
                   if (Platform.isIOS) createApplePayView(),
-                  // RaisedButton(
-                  //   child: Text('Pay (Embedded Payment)'),
-                  //   onPressed: payWithEmbeddedPayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Send Payment'),
-                  //   onPressed: sendPayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Initiate Payment'),
-                  //   onPressed: initiatePayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Execute Regular Payment'),
-                  //   onPressed: executeRegularPayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Execute Direct Payment'),
-                  //   onPressed: executeDirectPayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Execute Direct Payment with Recurring'),
-                  //   onPressed: executeDirectPaymentWithRecurring,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Cancel Recurring Payment'),
-                  //   onPressed: cancelRecurringPayment,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Cancel Token'),
-                  //   onPressed: cancelToken,
-                  // ),
-                  // RaisedButton(
-                  //   child: Text('Get Payment Status'),
-                  //   onPressed: getPaymentStatus,
-                  // ),
+                  ElevatedButton(
+                    child: Text('Pay (Embedded Payment)'),
+                    onPressed: payWithEmbeddedPayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Send Payment'),
+                    onPressed: sendPayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Initiate Payment'),
+                    onPressed: initiatePayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Execute Regular Payment'),
+                    onPressed: executeRegularPayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Execute Direct Payment'),
+                    onPressed: executeDirectPayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Execute Direct Payment with Recurring'),
+                    onPressed: executeDirectPaymentWithRecurring,
+                  ),
+                  ElevatedButton(
+                    child: Text('Cancel Recurring Payment'),
+                    onPressed: cancelRecurringPayment,
+                  ),
+                  ElevatedButton(
+                    child: Text('Cancel Token'),
+                    onPressed: cancelToken,
+                  ),
+                  ElevatedButton(
+                    child: Text('Get Payment Status'),
+                    onPressed: getPaymentStatus,
+                  ),
                   Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(_response),
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 5.0, right: 5.0),
+                    child: Text(
+                      _response,
+                      style: TextStyle(backgroundColor: Colors.yellowAccent),
+                    ),
                   )
                 ],
               ),
@@ -536,23 +543,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   createPaymentCardView() {
     mfPaymentCardView = MFPaymentCardView(
-//      inputColor: Colors.red,
-//      labelColor: Colors.yellow,
-//      errorColor: Colors.blue,
-//      borderColor: Colors.green,
-//      fontSize: 14,
-//      borderWidth: 1,
-//      borderRadius: 10,
-//      cardHeight: 220,
-//      cardHolderNameHint: "card holder name hint",
-//      cardNumberHint: "card number hint",
-//      expiryDateHint: "expiry date hint",
-//      cvvHint: "cvv hint",
-//      showLabels: true,
-//      cardHolderNameLabel: "card holder name label",
-//      cardNumberLabel: "card number label",
-//      expiryDateLabel: "expiry date label",
-//      cvvLabel: "cvv label",
+        // language: MFAPILanguage.EN,
+        // inputColor: Colors.red,
+        // labelColor: Colors.yellow,
+        // errorColor: Colors.blue,
+        // borderColor: Colors.green,
+        // fontSize: 14,
+        // borderWidth: 1,
+        // borderRadius: 10,
+        // cardHeight: 220,
+        // cardHolderNameHint: "card holder name hint",
+        // cardNumberHint: "card number hint",
+        // expiryDateHint: "expiry date hint",
+        // cvvHint: "cvv hint",
+        // showLabels: true,
+        // cardHolderNameLabel: "card holder name label",
+        // cardNumberLabel: "card number label",
+        // expiryDateLabel: "expiry date label",
+        // cvvLabel: "cvv label",
         );
 
     return mfPaymentCardView;
@@ -560,7 +568,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// This for Apple pay button
   createApplePayView() {
-    mfApplePayButton = MFApplePayButton();
+    mfApplePayButton =
+        MFApplePayButton(height: 50, radius: 15, buttonText: "Buy with");
     return mfApplePayButton;
   }
 }

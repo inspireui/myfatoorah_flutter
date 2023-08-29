@@ -1,5 +1,5 @@
 name: myfatoorah_flutter
-version: 2.1.14  # Don't forget to update this number inside the "getPluginVersion" method in "SourceInfo.dart" file and in README file and CHANGELOG file
+version: 2.1.20  # Don't forget to update this number inside the "getPluginVersion" method in "SourceInfo.dart" file and in README file and CHANGELOG file
 description: This plugin simplify the MyFatoorah payment platforms integration with your app, that works smoothly
   and provide you a simple way to embed our payment functions within your app.
 documentation: https://myfatoorah.readme.io/docs/flutter
@@ -20,8 +20,14 @@ dependencies:
   device_info: ^2.0.0
 
 #  flutter_webview_plugin: ^0.4.0 #Support Apple pay
-  webview_flutter: ^4.0.6
+  webview_flutter: ^2.3.1
+  flutter_inappwebview: ^5.7.2+3
 
+#webview_flutter:
+#  git:
+#    path: packages/webview_flutter
+#    ref: webview-transparent-background
+#    url: "git://github.com/crizant/plugins"
 dev_dependencies:
   flutter_test:
     sdk: flutter

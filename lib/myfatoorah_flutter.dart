@@ -10,7 +10,7 @@ import 'package:myfatoorah_flutter/model/initsession/MFInitiateSessionRequest.da
 import 'package:myfatoorah_flutter/utils/MFCountry.dart';
 import 'package:myfatoorah_flutter/utils/MFEnvironment.dart';
 
-import 'package:webview_flutter/src/webview_flutter_legacy.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:myfatoorah_flutter/model/MFError.dart';
 import 'package:myfatoorah_flutter/model/cancelrecurring/SDKCancelRecurringResponse.dart';
@@ -253,18 +253,10 @@ class MyFatoorahFlutter implements _SDKListener {
 
   void callExecutePayment(
       BuildContext context, MFExecutePaymentRequest request, String apiLang,
-      {Function? onInvoiceCreated, required Function onResponse}) async {
+      {bool isEmbeddedPayment = false,
+      Function? onInvoiceCreated,
+      required Function onResponse}) async {
     this.apiLang = apiLang;
-
-    if (request.callBackUrl == null || request.callBackUrl!.isEmpty)
-      request.callBackUrl = AppConstants.callBackUrl;
-    else
-      AppConstants.callBackUrl = request.callBackUrl;
-
-    if (request.errorUrl == null || request.errorUrl!.isEmpty)
-      request.errorUrl = AppConstants.errorUrl;
-    else
-      AppConstants.errorUrl = request.errorUrl;
 
     request.sourceInfo = await SourceInfo(context).getData();
 
@@ -286,7 +278,7 @@ class MyFatoorahFlutter implements _SDKListener {
       onInvoiceCreated(result.invoiceId.toString());
     }
 
-    if (!result.isDirectPayment!) {
+    if (!result.isDirectPayment! || isEmbeddedPayment) {
       this.func = onResponse;
       this.myContext = context;
       showWebView(
@@ -302,16 +294,6 @@ class MyFatoorahFlutter implements _SDKListener {
   void callExecutePaymentForInAppApplePay(BuildContext context,
       MFExecutePaymentRequest request, String apiLang, Function func) async {
     this.apiLang = apiLang;
-
-    if (request.callBackUrl == null || request.callBackUrl!.isEmpty)
-      request.callBackUrl = AppConstants.callBackUrl;
-    else
-      AppConstants.callBackUrl = request.callBackUrl;
-
-    if (request.errorUrl == null || request.errorUrl!.isEmpty)
-      request.errorUrl = AppConstants.errorUrl;
-    else
-      AppConstants.errorUrl = request.errorUrl;
 
     request.sourceInfo = await SourceInfo(context).getData();
 
@@ -376,16 +358,6 @@ class MyFatoorahFlutter implements _SDKListener {
               error)));
       return;
     }
-
-    if (request.callBackUrl == null || request.callBackUrl!.isEmpty)
-      request.callBackUrl = AppConstants.callBackUrl;
-    else
-      AppConstants.callBackUrl = request.callBackUrl;
-
-    if (request.errorUrl == null || request.errorUrl!.isEmpty)
-      request.errorUrl = AppConstants.errorUrl;
-    else
-      AppConstants.errorUrl = request.errorUrl;
 
     request.sourceInfo = await SourceInfo(context).getData();
 
@@ -522,14 +494,12 @@ class MyFatoorahFlutter implements _SDKListener {
     result.data?.recurringId = recurringId;
 
     if (result.isSuccess != null && result.isSuccess!) {
-      var transactionError =
+      var invoiceTransaction =
           _checkIsPaymentTransactionSuccess(result.data!.invoiceTransactions);
 
-      if (transactionError.isNotEmpty) {
-        var mfError = new MFError(
-            ErrorHelper.getValue(ErrorsEnum.PAYMENT_TRANSACTION_FAILED_ERROR)
-                .code,
-            transactionError);
+      if (invoiceTransaction != null) {
+        var mfError =
+            new MFError(invoiceTransaction.errorCode, invoiceTransaction.error);
 
         if (isDirectPayment)
           func!(invoiceId, MFResult.fail<MFDirectPaymentResponse>(mfError));
@@ -553,9 +523,9 @@ class MyFatoorahFlutter implements _SDKListener {
     }
   }
 
-  String _checkIsPaymentTransactionSuccess(
+  InvoiceTransactions? _checkIsPaymentTransactionSuccess(
       List<InvoiceTransactions>? invoiceTransactions) {
-    if (invoiceTransactions == null || invoiceTransactions.isEmpty) return "";
+    if (invoiceTransactions == null || invoiceTransactions.isEmpty) return null;
 
     var isSuccess = false;
     var index = 0;
@@ -571,9 +541,9 @@ class MyFatoorahFlutter implements _SDKListener {
     }
 
     if (isSuccess)
-      return "";
+      return null;
     else
-      return invoiceTransactions[index].error ??= "";
+      return invoiceTransactions[index];
   }
 
   // Payment Status
@@ -595,14 +565,12 @@ class MyFatoorahFlutter implements _SDKListener {
     var result = SDKPaymentStatusResponse.fromJson(json.decode(response.body));
 
     if (result.isSuccess != null && result.isSuccess!) {
-      var transactionError =
+      var invoiceTransaction =
           _checkIsPaymentTransactionSuccess(result.data!.invoiceTransactions);
 
-      if (transactionError.isNotEmpty) {
+      if (invoiceTransaction != null) {
         func(MFResult.fail<MFPaymentStatusResponse>(new MFError(
-            ErrorHelper.getValue(ErrorsEnum.PAYMENT_TRANSACTION_FAILED_ERROR)
-                .code,
-            transactionError)));
+            invoiceTransaction.errorCode, invoiceTransaction.error)));
       } else
         func(MFResult.success(result.data));
     } else {
@@ -870,12 +838,12 @@ class _MyAppState extends State<MyApp> {
         _setProgressBar(progress.toString());
       },
       navigationDelegate: (NavigationRequest request) {
-        print("navigationDelegate url: " + request.url);
+        // print("navigationDelegate url: " + request.url);
         checkCallBacks(request.url, recurringId);
         return NavigationDecision.navigate;
       },
       onPageFinished: (String url) {
-        print('Page finished loading: $url');
+        // print('Page finished loading: $url');
       },
       gestureNavigationEnabled: true,
     );

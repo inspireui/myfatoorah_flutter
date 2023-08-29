@@ -22,7 +22,7 @@ and read it for more details
 ##### 1. Add MyFatoorah plugin to your pubspec.yaml file.
 
     dependencies:
-        myfatoorah_flutter: ^2.1.12    
+        myfatoorah_flutter: ^2.1.20    
 	  
 ##### 2. Install the plugin by running the following command.
 
@@ -70,10 +70,10 @@ Inside your Dart code do the following:
                 (MFResult<MFInitiatePaymentResponse> result) => {
     
               if(result.isSuccess()) {
-                print(result.response.toJson().toString())
+                print(result.response?.toJson().toString())
               }
               else {
-                print(result.error.message)
+                print(result.error?.message)
               }
             });
 
@@ -91,10 +91,10 @@ MyFatoorah platform and will return to your application the URL to redirect your
                 (String invoiceId, MFResult<MFPaymentStatusResponse> result) => {
     
               if(result.isSuccess()) {
-                print(result.response.toJson().toString())
+                print(result.response?.toJson().toString())
               }
               else {
-                print(result.error.message)
+                print(result.error?.message)
               }
             });
   
@@ -130,10 +130,10 @@ You have to know the following steps to understand how it works:
             (String invoiceId, MFResult<MFDirectPaymentResponse> result) => {
 
           if(result.isSuccess()) {
-            print(result.response.toJson().toString())
+            print(result.response?.toJson().toString())
           }
           else {
-            print(result.error.message)
+            print(result.error?.message)
           }
         });
 		
@@ -150,10 +150,10 @@ paid by your customer
             (MFResult<MFSendPaymentResponse> result) => {
       
       if(result.isSuccess()) {
-        print(result.response.toJson().toString())
+        print(result.response?.toJson().toString())
       }
       else {
-        print(result.error.message)
+        print(result.error?.message)
       }
     });
 	
@@ -168,10 +168,10 @@ This will enable your application to get the full details about a certain invoic
             (MFResult<MFPaymentStatusResponse> result) => {
 
           if(result.isSuccess()) {
-            print(result.response.toJson().toString())
+            print(result.response?.toJson().toString())
           }
           else {
-            print(result.error.message)
+            print(result.error?.message)
           }
         });
 
@@ -192,7 +192,8 @@ Create instance of `MFPaymentCardView` and add it to your `build()` function lik
       }
     
       createPaymentCardView() {
-        mfPaymentCardView = MFPaymentCardView();
+        if(mfPaymentCardView == null)
+            mfPaymentCardView = MFPaymentCardView();
         return mfPaymentCardView;
       }
       
@@ -235,9 +236,10 @@ You need to call `initiateSession()` function to create session. You need to do 
          */
         MFSDK.initiateSession(null, (MFResult<MFInitiateSessionResponse> result) => {
           if(result.isSuccess()) 
-            mfPaymentCardView.load(result.response!)
+            mfPaymentCardView.load(result.response!,
+                onCardBinChanged: (String bin) => {print("Bin: " + bin)})
           else
-            print("Response: " + result.error!.toJson().toString().toString());
+            print("Response: " + result.error?.toJson().toString());
         });
       }
 ###### Note: The `initiateSession()` function should called after `MFSDK.init()` function (that we mentioned above).
@@ -255,15 +257,18 @@ After that, you need to handle your `Pay` button to call the `pay()` function, c
           if (result.isSuccess())
             {
               setState(() {
-                print("Response: " + result.response!.toJson().toString());
-                _response = result.response!.toJson().toString();
+                print("invoiceId: " + invoiceId);
+                _response = result.response?.toJson().toString();
+                print("Response: " + _response!);
               })
             }
           else
             {
               setState(() {
-                print("Error: " + result.error!.toJson().toString());
-                _response = result.error!.message!;
+                print("invoiceId: " + invoiceId);
+                var errorJson = result.error?.toJson();
+                print("Error: " + errorJson.toString());
+                _response = errorJson?.toString();
               })
             }
         });
@@ -293,11 +298,11 @@ Create instance of `MFApplePayButton` and add it to your `build()` function like
 You need to call `initiateSession()` function to create session. You need to do this for each payment separately. `Session` is valid for only one payment. and inside it's success state, call `load()` function and pass it the session response, like the following:
 
     void initiateSession() {
-        MFSDK.initiateSession((MFResult<MFInitiateSessionResponse> result) => {
+        MFSDK.initiateSession(null, (MFResult<MFInitiateSessionResponse> result) => {
           if(result.isSuccess()) 
-            loadApplePay(result.response)
+            loadApplePay(result.response!)
           else
-            print("Response: " + result.error!.toJson().toString().toString());
+            print(result.error?.toJson().toString())
         });
       }
 
@@ -315,17 +320,16 @@ You need to call `initiateSession()` function to create session. You need to do 
             {
                 setState(() {
                     print("invoiceId: " + invoiceId);
-                    print("Response: " + result.response.toJson().toString());
-                    _response = result.response.toJson().toString();
+                    _response = result.response?.toJson().toString();
+                    print("Response: " + _response!);
                 })
             }
             else
             {
                 setState(() {
                     print("invoiceId: " + invoiceId);
-                    print("Error: " + result.error.toJson().toString());
-                        _response = result.error.message;
-                    })
+                    print("Error: " + result.error!.toJson().toString());
+                    _response = result.error?.message;
                 }
             });
     }

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfatoorah_flutter/ConfigManager.dart';
 import 'package:myfatoorah_flutter/embeddedpayment/HtmlPage.dart';
-import 'package:myfatoorah_flutter/model/executepayment/MFExecutePaymentRequest.dart';
-import 'package:myfatoorah_flutter/model/initsession/SDKInitSessionResponse.dart';
-import 'package:myfatoorah_flutter/utils/AppConstants.dart';
 
 import '../myfatoorah_flutter.dart';
 
+// ignore: must_be_immutable
 class MFPaymentCardView extends StatefulWidget {
   final Color inputColor;
   final Color labelColor;
@@ -108,7 +105,7 @@ class MFPaymentCardView extends StatefulWidget {
       </head>
       
       <body>
-          <script src="$environment/cardview/v1/session.js"></script>
+          <script src="$environment/cardview/v2/session.js"></script>
           <div id="card-element"></div>
         
       <script type="text/javascript">
@@ -118,6 +115,9 @@ class MFPaymentCardView extends StatefulWidget {
           function returnPaymentFailed(error) {
             Fail.postMessage(error);
           }
+          function onCardBinChanged(bin) {
+            BinChanges.postMessage(bin);
+          }   
       </script>
       
       <script>
@@ -125,6 +125,7 @@ class MFPaymentCardView extends StatefulWidget {
               countryCode: "$countryCode",
               sessionId: "$sessionId",
               cardViewId: "card-element",
+              onCardBinChanged: handleBinChanges,
               style: {
                   direction: "$direction",
                   cardHeight: 500,
@@ -167,14 +168,17 @@ class MFPaymentCardView extends StatefulWidget {
           this.myFatoorah.init(config);
    
           function submit() {
-
               this.myFatoorah.submit() // this.myFatoorah.submit(currency)
                   .then(function(response) {
-                      callExecutePayment(response.SessionId);
+                      callExecutePayment(response.sessionId);
                   })
                   .catch(function(error) {
                       returnPaymentFailed(error);
                   });        
+          };
+          
+          function handleBinChanges(bin) {
+            onCardBinChanged(bin);
           };
       </script>
       
@@ -189,12 +193,14 @@ class MFPaymentCardView extends StatefulWidget {
     return hex.replaceRange(0, 2, "");
   }
 
-  void load(MFInitiateSessionResponse initSessionResponse) {
+  void load(MFInitiateSessionResponse initSessionResponse,
+      {Function? onCardBinChanged}) {
     setEnvironment();
     htmlPage!.load(
         generateHTML(initSessionResponse.sessionId!,
             initSessionResponse.countryCode!, this.newCardHeight),
-        this.newCardHeight);
+        this.newCardHeight,
+        onCardBinChanged);
   }
 
   void pay(MFExecutePaymentRequest request, String apiLang, Function callback) {

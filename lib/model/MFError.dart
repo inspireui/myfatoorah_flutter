@@ -1,5 +1,5 @@
 class MFError {
-  int? code;
+  dynamic code;
   String? message;
 
   Map<String, dynamic> toJson() {
@@ -9,7 +9,7 @@ class MFError {
     return data;
   }
 
-  MFError(int? _code, String? _message) {
+  MFError(dynamic _code, String? _message) {
     this.code = _code;
     this.message = _message;
   }

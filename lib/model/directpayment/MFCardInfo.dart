@@ -20,8 +20,8 @@ class MFCardInfo {
       String? expiryYear,
       String? securityCode,
       String? cardHolderName,
-      bool bypass3DS: false,
-      bool saveToken: false}) {
+      bool bypass3DS = false,
+      bool saveToken = false}) {
     if (cardToken.isNotEmpty) {
       this.paymentType = AppConstants.KEY_TOKEN;
       this.token = cardToken;
