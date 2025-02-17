@@ -6,8 +6,8 @@ documentation: https://myfatoorah.readme.io/docs/flutter
 homepage: https://dev.azure.com/myfatoorahsc/_git/MF-SDK-Cross-Platforms-Demos
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.10.0"
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.3.0'
 
 dependencies:
   flutter:
@@ -33,14 +33,14 @@ dev_dependencies:
 
 #flutter:
 #  plugin:
-#    androidPackage: com.example.myfatoorah_flutter
+#    androidPackage: com.myfatoorahflutter.myfatoorah_flutter
 #    pluginClass: MyfatoorahFlutterPlugin
 
 flutter:
   plugin:
     platforms:
       android:
-        package: com.example.myfatoorah_flutter
+        package: com.myfatoorahflutter.myfatoorah_flutter
         pluginClass: MyfatoorahFlutterPlugin
       ios:
         pluginClass: MyfatoorahFlutterPlugin

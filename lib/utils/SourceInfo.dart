@@ -15,7 +15,8 @@ class SourceInfo {
     String data = "";
 
     try {
-      data = await getCallerType() +
+      data =
+          await getCallerType() +
           "-" +
           getCallerOS() +
           "-" +
